@@ -1,0 +1,4 @@
+volumes/summaries/*
+volumes/transcripts/*
+volumes/videos/*
+!.gitkeep

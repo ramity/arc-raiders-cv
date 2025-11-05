@@ -1,0 +1,55 @@
+services:
+
+  arc_raiders_scraper:
+    build:
+      context: ./
+      dockerfile: ./docker/scraper/Dockerfile
+    container_name: arc_raiders_scraper
+    image: arc_raiders_scraper
+    volumes:
+      - ./volumes/videos:/root/videos
+    networks:
+      - arc_raiders_cv
+
+  arc_raiders_analysis:
+    build:
+      context: ./
+      dockerfile: ./docker/analysis/Dockerfile
+    container_name: arc_raiders_analysis
+    image: arc_raiders_analysis
+    volumes:
+      - ./volumes/videos:/root/videos
+      - ./src/analysis:/usr/src/analysis
+    networks:
+      - arc_raiders_cv
+
+  arc_raiders_whisper:
+    build:
+      context: ./
+      dockerfile: ./docker/whisper/Dockerfile
+    container_name: arc_raiders_whisper
+    image: arc_raiders_whisper
+    volumes:
+      - ./volumes/videos:/root/videos
+      - ./volumes/transcripts:/root/transcripts
+      - ./src/whisper:/usr/src/whisper
+    networks:
+      - arc_raiders_cv
+
+  arc_raiders_summary:
+    build:
+      context: ./
+      dockerfile: ./docker/summary/Dockerfile
+    container_name: arc_raiders_summary
+    image: arc_raiders_summary
+    volumes:
+      - ./volumes/summaries:/root/summaries
+      - ./src/summary:/usr/src/summary
+    networks:
+      - arc_raiders_cv
+
+networks:
+
+  arc_raiders_cv:
+      name: arc_raiders_cv
+      driver: bridge
