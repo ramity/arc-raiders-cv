@@ -1,4 +1,11 @@
 volumes/summaries/*
 volumes/transcripts/*
 volumes/videos/*
+
+__pycache__
+
+*.txt
+*.jpg
+*.png
+
 !.gitkeep

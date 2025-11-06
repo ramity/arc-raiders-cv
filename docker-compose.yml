@@ -48,6 +48,17 @@ services:
     networks:
       - arc_raiders_cv
 
+  arc_raiders_ocr:
+    build:
+      context: ./
+      dockerfile: ./docker/ocr/Dockerfile
+    container_name: arc_raiders_ocr
+    image: arc_raiders_ocr
+    volumes:
+      - ./src/ocr:/usr/src/ocr
+    networks:
+      - arc_raiders_cv
+
 networks:
 
   arc_raiders_cv:

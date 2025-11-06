@@ -11,12 +11,13 @@ RUN apt install -y python3-pip
 RUN apt install -y pkg-config
 
 # Install Tesseract
-RUN apt install -y tesseract-ocr
+# RUN apt install -y tesseract-ocr
+# RUN pip install --break-system-packages pytesseract
 
 # Install pip packages
 RUN pip install --break-system-packages numpy
-RUN pip install --break-system-packages pytesseract
 RUN pip install --break-system-packages matplotlib
+RUN pip install --break-system-packages requests
 
 # OpenCV dependencies
 RUN apt install -y cmake g++ wget unzip
