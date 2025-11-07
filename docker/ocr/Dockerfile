@@ -14,9 +14,6 @@ RUN pip install --break-system-packages fastapi
 RUN pip install --break-system-packages pillow
 RUN pip install --break-system-packages python-multipart
 
-# Add "python" alias
-RUN echo 'alias python="python3"' >> ~/.bashrc
-
 WORKDIR /usr/src/ocr
 
-ENTRYPOINT sleep infinity
+ENTRYPOINT python3 server.py

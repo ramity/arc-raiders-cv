@@ -18,6 +18,7 @@ response = requests.post(OCR_URL, files=files)
 if response.status_code == 200:
     data = response.json()
     print("✅ OCR Results:")
+    print(data)
     for item in data["results"]:
         print(f"Text: {item['text']} (conf: {item['confidence']:.2f})")
 else:

@@ -29,9 +29,9 @@ async def ocr_endpoint(file: UploadFile = File(...)):
         # Format results into JSON-friendly structure
         response = [
             {
-                # "bbox": result[0],     # bounding box
-                "text": result[1],     # recognized text
-                "confidence": result[2]  # confidence score
+                "bbox": [[int(item) for item in sublist] for sublist in result[0]],
+                "text": result[1],
+                "confidence": result[2]
             }
             for result in results
         ]

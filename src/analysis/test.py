@@ -2,7 +2,6 @@ import cv2
 import pytesseract
 import os
 import numpy
-import easyocr
 
 # Config
 VIDEO_DIR = "/root/videos"
@@ -15,7 +14,7 @@ SUBREGION = (942, 16, 36, 24) # subregion within bearing
 # compass_array = ["N", "NE", "E", "SE", "S", "SW", "W", "NW"]
 
 # Init easyocr
-reader = easyocr.Reader(['en'], gpu=False)
+# reader = easyocr.Reader(['en'], gpu=False)
 
 filename = "2608011038.mp4"
 video_path = os.path.join(VIDEO_DIR, filename)
