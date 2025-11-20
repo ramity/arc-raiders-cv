@@ -10,7 +10,7 @@ OCR_URL = "http://arc_raiders_ocr:8000/ocr"
 VIDEO_DIR = "/root/videos"
 VIDEO_FILE = "2608011038.mp4"
 VIDEO_PATH = os.path.join(VIDEO_DIR, VIDEO_FILE)
-START_FRAME_NUMBER = (26*60*60)+(52*60)
+START_FRAME_NUMBER = (2*60*60)+(37.5*60)
 FRAME_COUNT = 1
 
 # In-Raid UI
@@ -20,6 +20,7 @@ COMPASS_BEARING_VALUE_SUBREGION = (936, 16, 48, 24)
 COMPASS_OBJECTIVES_SUBREGION = (675, 40, 550, 32)
 COMPASS_TEXT_SUBREGION = (783, 73, 371, 26)
 MATCH_TIMER_SUBREGION = (930, 100, 60, 24)
+AUTOMATIC_EXTRACTION_TIMER_SUBREGION = (810, 103, 299, 18)
 RETURN_POINT_SHUTDOWN_NOTICE_REGION = (712, 184, 503, 88)
 
 QUICKWHEEL_BOUNDING_BOX = (649, 230, 622, 620)
@@ -33,17 +34,21 @@ XP_LOGS_SUBREGION = (23, 308, 355, 118)
 
 PLAYER_PROXIMITY_VOICE_SUBREGION = (21, 592, 288, 39)
 
+PLAYER_CHAT_SUBREGION = (36, 704, 448, 70)
+
 PLAYER_2_BOUNDING_BOX = (39, 876, 271, 68)
 PLAYER_2_COLOR_SUBREGION = (45, 895, 6, 20)
 
 PLAYER_1_BOUNDING_BOX = (40, 944, 270, 90)
+
+PLAYER_1_VOICE_ICON_SUBREGION = (268, 944, 20, 19)
 
 PLAYER_1_ARMOR_NW_POINT = (40, 994)
 PLAYER_1_ARMOR_NE_POINT = (309, 966)
 PLAYER_1_ARMOR_SE_POINT = (309, 981)
 PLAYER_1_ARMOR_SW_POINT = (40, 1011)
 PLAYER_1_ARMOR_BOUNDING_BOX = (40, 966, 269, 46)
-PLAYER_1_ARMOR_SLICE_SUBREGION = (3, 20, 263, 1)
+PLAYER_1_ARMOR_SLICE_SUBREGION = (4, 20, 261, 1)
 # src_points = numpy.float32([PLAYER_1_ARMOR_NW_POINT, PLAYER_1_ARMOR_NE_POINT, PLAYER_1_ARMOR_SW_POINT, PLAYER_1_ARMOR_SE_POINT]) 
 # dst_points = numpy.float32([[0, 0], [w, 0], [0, h], [w, h]])
 # M = cv2.getPerspectiveTransform(src_points, dst_points)
@@ -54,12 +59,16 @@ PLAYER_1_HEALTH_NE_POINT = (309, 986)
 PLAYER_1_HEALTH_SE_POINT = (309, 1001)
 PLAYER_1_HEALTH_SW_POINT = (40, 1033)
 PLAYER_1_HEALTH_BOUNDING_BOX = (40, 986, 269, 46)
+PLAYER_1_HEALTH_SLICE_SUBREGION = (4, 20, 261, 1)
 # src_points = numpy.float32([PLAYER_1_HEALTH_NW_POINT, PLAYER_1_HEALTH_NE_POINT, PLAYER_1_HEALTH_SW_POINT, PLAYER_1_HEALTH_SE_POINT]) 
 # dst_points = numpy.float32([[0, 0], [w, 0], [0, h], [w, h]])
 # M = cv2.getPerspectiveTransform(src_points, dst_points)
 # unwarped_image = cv2.warpPerspective(frame, M, (w, h))
 
+OVER_ENCUMBERED_ICON_REGION = (946, 936, 28, 24)
+
 STAMINA_BAR_SUBREGION = (857, 968, 206, 16)
+STAMINA_BAR_SLICE_SUBREGION = (3, 7, 200, 1)
 
 PATCH_SERVER_LOBBY_REGION = (1731, 1060, 160, 20)
 
@@ -75,6 +84,11 @@ SELECTED_PRIMARY_WEAPON_RESERVE_AMMO_SUBREGION = (1720, 952, 32, 17)
 
 FLASHLIGHT_TOOL_TIP_REGION = (1743, 821, 140, 37)
 UNARMED_TOOL_TIP_REGION = (1743, 784, 140, 37)
+
+DIALOGUE_CAPTION_SUBREGION = (587, 985, 751, 95)
+
+RECHARGE_OWN_SHIELD_SUBREGION = (1176, 678, 219, 32)
+RECHARGE_OTHER_SHIELD_SUBREGION = (1176, 726, 233, 32)
 
 # Looting UI
 
@@ -94,6 +108,10 @@ LOOTING_SAFE_POCKET_LABEL_SUBREGION = (1473, 695, 155, 17)
 LOOTING_SAFE_POCKET_BOUNDING_BOX = (1473, 735, 306, 98)
 LOOTING_CONTAINER_BOUNDING_BOX = (141, 295, 410, 410)
 LOOTING_KEYBINDS_BOUNDING_BOX = (51, 1017, 764, 34)
+
+# Map UI
+
+MAP_LEGEND_BOUNDING_BOX = (1506, 128, 350, 815)
 
 # Open video file and navigate to desired start frame
 capture = cv2.VideoCapture(VIDEO_PATH)
@@ -117,6 +135,7 @@ for offset in range(FRAME_COUNT):
     # cv2.rectangle(frame, COMPASS_OBJECTIVES_SUBREGION[:2], (COMPASS_OBJECTIVES_SUBREGION[0] + COMPASS_OBJECTIVES_SUBREGION[2], COMPASS_OBJECTIVES_SUBREGION[1] + COMPASS_OBJECTIVES_SUBREGION[3]), (0, 0, 255), 1)
     # cv2.rectangle(frame, COMPASS_TEXT_SUBREGION[:2], (COMPASS_TEXT_SUBREGION[0] + COMPASS_TEXT_SUBREGION[2], COMPASS_TEXT_SUBREGION[1] + COMPASS_TEXT_SUBREGION[3]), (0, 0, 255), 1)
     # cv2.rectangle(frame, MATCH_TIMER_SUBREGION[:2], (MATCH_TIMER_SUBREGION[0] + MATCH_TIMER_SUBREGION[2], MATCH_TIMER_SUBREGION[1] + MATCH_TIMER_SUBREGION[3]), (0, 0, 255), 1)
+    # cv2.rectangle(frame, AUTOMATIC_EXTRACTION_TIMER_SUBREGION[:2], (AUTOMATIC_EXTRACTION_TIMER_SUBREGION[0] + AUTOMATIC_EXTRACTION_TIMER_SUBREGION[2], AUTOMATIC_EXTRACTION_TIMER_SUBREGION[1] + AUTOMATIC_EXTRACTION_TIMER_SUBREGION[3]), (0, 0, 255), 1)
     # cv2.rectangle(frame, RETURN_POINT_SHUTDOWN_NOTICE_REGION[:2], (RETURN_POINT_SHUTDOWN_NOTICE_REGION[0] + RETURN_POINT_SHUTDOWN_NOTICE_REGION[2], RETURN_POINT_SHUTDOWN_NOTICE_REGION[1] + RETURN_POINT_SHUTDOWN_NOTICE_REGION[3]), (0, 0, 255), 1)
     # cv2.rectangle(frame, QUICKWHEEL_BOUNDING_BOX[:2], (QUICKWHEEL_BOUNDING_BOX[0] + QUICKWHEEL_BOUNDING_BOX[2], QUICKWHEEL_BOUNDING_BOX[1] + QUICKWHEEL_BOUNDING_BOX[3]), (0, 0, 255), 1)
     # cv2.rectangle(frame, QUICKWHEEL_TEXT_SUBREGION[:2], (QUICKWHEEL_TEXT_SUBREGION[0] + QUICKWHEEL_TEXT_SUBREGION[2], QUICKWHEEL_TEXT_SUBREGION[1] + QUICKWHEEL_TEXT_SUBREGION[3]), (0, 0, 255), 1)
@@ -124,10 +143,13 @@ for offset in range(FRAME_COUNT):
     # cv2.rectangle(frame, LOCATION_TEXT_SUBREGION[:2], (LOCATION_TEXT_SUBREGION[0] + LOCATION_TEXT_SUBREGION[2], LOCATION_TEXT_SUBREGION[1] + LOCATION_TEXT_SUBREGION[3]), (0, 0, 255), 1)
     # cv2.rectangle(frame, XP_LOGS_SUBREGION[:2], (XP_LOGS_SUBREGION[0] + XP_LOGS_SUBREGION[2], XP_LOGS_SUBREGION[1] + XP_LOGS_SUBREGION[3]), (0, 0, 255), 1)
     # cv2.rectangle(frame, PLAYER_PROXIMITY_VOICE_SUBREGION[:2], (PLAYER_PROXIMITY_VOICE_SUBREGION[0] + PLAYER_PROXIMITY_VOICE_SUBREGION[2], PLAYER_PROXIMITY_VOICE_SUBREGION[1] + PLAYER_PROXIMITY_VOICE_SUBREGION[3]), (0, 0, 255), 1)
+    # cv2.rectangle(frame, PLAYER_CHAT_SUBREGION[:2], (PLAYER_CHAT_SUBREGION[0] + PLAYER_CHAT_SUBREGION[2], PLAYER_CHAT_SUBREGION[1] + PLAYER_CHAT_SUBREGION[3]), (0, 0, 255), 1)
     # cv2.rectangle(frame, PLAYER_2_BOUNDING_BOX[:2], (PLAYER_2_BOUNDING_BOX[0] + PLAYER_2_BOUNDING_BOX[2], PLAYER_2_BOUNDING_BOX[1] + PLAYER_2_BOUNDING_BOX[3]), (0, 0, 255), 1)
     # cv2.rectangle(frame, PLAYER_1_BOUNDING_BOX[:2], (PLAYER_1_BOUNDING_BOX[0] + PLAYER_1_BOUNDING_BOX[2], PLAYER_1_BOUNDING_BOX[1] + PLAYER_1_BOUNDING_BOX[3]), (0, 0, 255), 1)
+    # cv2.rectangle(frame, PLAYER_1_VOICE_ICON_SUBREGION[:2], (PLAYER_1_VOICE_ICON_SUBREGION[0] + PLAYER_1_VOICE_ICON_SUBREGION[2], PLAYER_1_VOICE_ICON_SUBREGION[1] + PLAYER_1_VOICE_ICON_SUBREGION[3]), (0, 0, 255), 1)
     # cv2.rectangle(frame, PLAYER_1_ARMOR_BOUNDING_BOX[:2], (PLAYER_1_ARMOR_BOUNDING_BOX[0] + PLAYER_1_ARMOR_BOUNDING_BOX[2], PLAYER_1_ARMOR_BOUNDING_BOX[1] + PLAYER_1_ARMOR_BOUNDING_BOX[3]), (0, 0, 255), 1)
     # cv2.rectangle(frame, PLAYER_1_HEALTH_BOUNDING_BOX[:2], (PLAYER_1_HEALTH_BOUNDING_BOX[0] + PLAYER_1_HEALTH_BOUNDING_BOX[2], PLAYER_1_HEALTH_BOUNDING_BOX[1] + PLAYER_1_HEALTH_BOUNDING_BOX[3]), (0, 0, 255), 1)
+    # cv2.rectangle(frame, OVER_ENCUMBERED_ICON_REGION[:2], (OVER_ENCUMBERED_ICON_REGION[0] + OVER_ENCUMBERED_ICON_REGION[2], OVER_ENCUMBERED_ICON_REGION[1] + OVER_ENCUMBERED_ICON_REGION[3]), (0, 0, 255), 1)
     # cv2.rectangle(frame, STAMINA_BAR_SUBREGION[:2], (STAMINA_BAR_SUBREGION[0] + STAMINA_BAR_SUBREGION[2], STAMINA_BAR_SUBREGION[1] + STAMINA_BAR_SUBREGION[3]), (0, 0, 255), 1)
     # cv2.rectangle(frame, PATCH_SERVER_LOBBY_REGION[:2], (PATCH_SERVER_LOBBY_REGION[0] + PATCH_SERVER_LOBBY_REGION[2], PATCH_SERVER_LOBBY_REGION[1] + PATCH_SERVER_LOBBY_REGION[3]), (0, 0, 255), 1)
     # cv2.rectangle(frame, RELOAD_INDICATOR_SUBREGION[:2], (RELOAD_INDICATOR_SUBREGION[0] + RELOAD_INDICATOR_SUBREGION[2], RELOAD_INDICATOR_SUBREGION[1] + RELOAD_INDICATOR_SUBREGION[3]), (0, 0, 255), 1)
@@ -139,6 +161,9 @@ for offset in range(FRAME_COUNT):
     # cv2.rectangle(frame, SELECTED_PRIMARY_WEAPON_RESERVE_AMMO_SUBREGION[:2], (SELECTED_PRIMARY_WEAPON_RESERVE_AMMO_SUBREGION[0] + SELECTED_PRIMARY_WEAPON_RESERVE_AMMO_SUBREGION[2], SELECTED_PRIMARY_WEAPON_RESERVE_AMMO_SUBREGION[1] + SELECTED_PRIMARY_WEAPON_RESERVE_AMMO_SUBREGION[3]), (0, 0, 255), 1)
     # cv2.rectangle(frame, FLASHLIGHT_TOOL_TIP_REGION[:2], (FLASHLIGHT_TOOL_TIP_REGION[0] + FLASHLIGHT_TOOL_TIP_REGION[2], FLASHLIGHT_TOOL_TIP_REGION[1] + FLASHLIGHT_TOOL_TIP_REGION[3]), (0, 0, 255), 1)
     # cv2.rectangle(frame, UNARMED_TOOL_TIP_REGION[:2], (UNARMED_TOOL_TIP_REGION[0] + UNARMED_TOOL_TIP_REGION[2], UNARMED_TOOL_TIP_REGION[1] + UNARMED_TOOL_TIP_REGION[3]), (0, 0, 255), 1)
+    # cv2.rectangle(frame, DIALOGUE_CAPTION_SUBREGION[:2], (DIALOGUE_CAPTION_SUBREGION[0] + DIALOGUE_CAPTION_SUBREGION[2], DIALOGUE_CAPTION_SUBREGION[1] + DIALOGUE_CAPTION_SUBREGION[3]), (0, 0, 255), 1)
+    # cv2.rectangle(frame, RECHARGE_OWN_SHIELD_SUBREGION[:2], (RECHARGE_OWN_SHIELD_SUBREGION[0] + RECHARGE_OWN_SHIELD_SUBREGION[2], RECHARGE_OWN_SHIELD_SUBREGION[1] + RECHARGE_OWN_SHIELD_SUBREGION[3]), (0, 0, 255), 1)
+    # cv2.rectangle(frame, RECHARGE_OTHER_SHIELD_SUBREGION[:2], (RECHARGE_OTHER_SHIELD_SUBREGION[0] + RECHARGE_OTHER_SHIELD_SUBREGION[2], RECHARGE_OTHER_SHIELD_SUBREGION[1] + RECHARGE_OTHER_SHIELD_SUBREGION[3]), (0, 0, 255), 1)
 
     # Draw Looting UI subregions
     # cv2.rectangle(frame, LOOTING_INVENTORY_NAVIGATION_SUBREGION[:2], (LOOTING_INVENTORY_NAVIGATION_SUBREGION[0] + LOOTING_INVENTORY_NAVIGATION_SUBREGION[2], LOOTING_INVENTORY_NAVIGATION_SUBREGION[1] + LOOTING_INVENTORY_NAVIGATION_SUBREGION[3]), (0, 0, 255), 1)
@@ -158,51 +183,102 @@ for offset in range(FRAME_COUNT):
     # cv2.rectangle(frame, LOOTING_CONTAINER_BOUNDING_BOX[:2], (LOOTING_CONTAINER_BOUNDING_BOX[0] + LOOTING_CONTAINER_BOUNDING_BOX[2], LOOTING_CONTAINER_BOUNDING_BOX[1] + LOOTING_CONTAINER_BOUNDING_BOX[3]), (0, 0, 255), 1)
     # cv2.rectangle(frame, LOOTING_KEYBINDS_BOUNDING_BOX[:2], (LOOTING_KEYBINDS_BOUNDING_BOX[0] + LOOTING_KEYBINDS_BOUNDING_BOX[2], LOOTING_KEYBINDS_BOUNDING_BOX[1] + LOOTING_KEYBINDS_BOUNDING_BOX[3]), (0, 0, 255), 1)
 
+    # Draw Map UI subregions
+    # cv2.rectangle(frame, MAP_LEGEND_BOUNDING_BOX[:2], (MAP_LEGEND_BOUNDING_BOX[0] + MAP_LEGEND_BOUNDING_BOX[2], MAP_LEGEND_BOUNDING_BOX[1] + MAP_LEGEND_BOUNDING_BOX[3]), (0, 0, 255), 1)
+
     cv2.imwrite("frame.jpg", frame)
 
     # Extract region of interest (ROI)
-    x, y, w, h = PLAYER_1_ARMOR_BOUNDING_BOX
+    x, y, w, h = RECHARGE_OTHER_SHIELD_SUBREGION
     roi = frame[y:y + h, x:x + w]
 
-    src_points = numpy.float32([PLAYER_1_ARMOR_NW_POINT, PLAYER_1_ARMOR_NE_POINT, PLAYER_1_ARMOR_SW_POINT, PLAYER_1_ARMOR_SE_POINT]) 
-    dst_points = numpy.float32([[0, 0], [w, 0], [0, h], [w, h]])
-    M = cv2.getPerspectiveTransform(src_points, dst_points)
-    unwarped_image = cv2.warpPerspective(frame, M, (w, h))
+    # Stamina calculation
 
-    # calculate the numerical value of the armor 
-    slice_roi = unwarped_image[PLAYER_1_ARMOR_SLICE_SUBREGION[1]:PLAYER_1_ARMOR_SLICE_SUBREGION[1] + PLAYER_1_ARMOR_SLICE_SUBREGION[3], PLAYER_1_ARMOR_SLICE_SUBREGION[0]:PLAYER_1_ARMOR_SLICE_SUBREGION[0] + PLAYER_1_ARMOR_SLICE_SUBREGION[2]]
-    slice_values = []
-    for pixel in slice_roi[0]:
-        blue = [167, 150, 63]
-        red = [79, 77, 213]
-        black = [89, 81, 81]
+    # slice_roi = roi[STAMINA_BAR_SLICE_SUBREGION[1]:STAMINA_BAR_SLICE_SUBREGION[1] + STAMINA_BAR_SLICE_SUBREGION[3], STAMINA_BAR_SLICE_SUBREGION[0]:STAMINA_BAR_SLICE_SUBREGION[0] + STAMINA_BAR_SLICE_SUBREGION[2]]
+    # slice_values = []
+    # for pixel in slice_roi[0]:
+    #     white = [255, 255, 255]
+    #     distance = abs(pixel - white).sum()
+    #     if distance < 100:
+    #         slice_values.append("W")
+    #     else:
+    #         slice_values.append("X")
 
-        blue_delta = abs(pixel - blue).sum()
-        red_delta = abs(pixel - red).sum()
-        black_delta = abs(pixel - black).sum()
+    # stamina_string = "".join(slice_values)
+    # print("Stamina:", stamina_string)
+    # stamina_value = stamina_string.count("W")
+    # print(f"White pixels in stamina bar: {stamina_value}")
 
-        min_diff = min(blue_delta, red_delta, black_delta)
+    # Shield calculation
 
-        if (blue_delta == min_diff).all():
-            slice_values.append("B")
-        elif (red_delta == min_diff).all():
-            slice_values.append("R")
-        elif (black_delta == min_diff).all():
-            slice_values.append("X")
-        else:
-            print("No armor pixel detected")
-    
-    armor_value = "".join(slice_values)
-    print("Armor:", armor_value)
-    
-    # Count number of B, R in armor value
-    num_blue = armor_value.count("B")
-    num_red = armor_value.count("R")
-    # Count the number of Xs at the end of the string
-    num_black = len(armor_value) - len(armor_value.rstrip("X"))
-    print(f"Blue: {num_blue}, Red: {num_red}, Black from end: {num_black}")
+    # src_points = numpy.float32([PLAYER_1_ARMOR_NW_POINT, PLAYER_1_ARMOR_NE_POINT, PLAYER_1_ARMOR_SW_POINT, PLAYER_1_ARMOR_SE_POINT]) 
+    # dst_points = numpy.float32([[0, 0], [w, 0], [0, h], [w, h]])
+    # M = cv2.getPerspectiveTransform(src_points, dst_points)
+    # unwarped_image = cv2.warpPerspective(frame, M, (w, h))
 
-    cv2.imwrite("roi.jpg", unwarped_image)
+    # # calculate the numerical value of the armor 
+    # slice_roi = unwarped_image[PLAYER_1_ARMOR_SLICE_SUBREGION[1]:PLAYER_1_ARMOR_SLICE_SUBREGION[1] + PLAYER_1_ARMOR_SLICE_SUBREGION[3], PLAYER_1_ARMOR_SLICE_SUBREGION[0]:PLAYER_1_ARMOR_SLICE_SUBREGION[0] + PLAYER_1_ARMOR_SLICE_SUBREGION[2]]
+    # slice_values = []
+    # for pixel in slice_roi[0]:
+    #     blue = [167, 150, 63]
+    #     red = [79, 77, 213]
+    #     yellow = [54, 164, 205]
+    #     black = [89, 81, 81]
+
+    #     blue_delta = abs(pixel - blue).sum()
+    #     red_delta = abs(pixel - red).sum()
+    #     yellow_delta = abs(pixel - yellow).sum()
+    #     black_delta = abs(pixel - black).sum()
+
+    #     min_diff = min(blue_delta, red_delta, yellow_delta, black_delta)
+
+    #     if (blue_delta == min_diff).all():
+    #         slice_values.append("B")
+    #     elif (red_delta == min_diff).all():
+    #         slice_values.append("R")
+    #     elif (yellow_delta == min_diff).all():
+    #         slice_values.append("Y")
+    #     elif (black_delta == min_diff).all():
+    #         slice_values.append("X")
+    #     else:
+    #         print("No armor pixel detected")
+
+    # shield_string = "".join(slice_values)
+    # print("Shield:", shield_string)
+
+    # # Count number of B, R, Y in armor value
+    # num_blue = shield_string.count("B")
+    # num_red = shield_string.count("R")
+    # num_yellow = shield_string.count("Y")
+
+    # # Count the number of Xs at the end of the string
+    # num_black = len(shield_string) - len(shield_string.rstrip("X"))
+    # print(f"Blue: {num_blue}, Red: {num_red}, Yellow: {num_yellow}, Black from end: {num_black}")
+
+    # Health calculation
+
+    # src_points = numpy.float32([PLAYER_1_HEALTH_NW_POINT, PLAYER_1_HEALTH_NE_POINT, PLAYER_1_HEALTH_SW_POINT, PLAYER_1_HEALTH_SE_POINT]) 
+    # dst_points = numpy.float32([[0, 0], [w, 0], [0, h], [w, h]])
+    # M = cv2.getPerspectiveTransform(src_points, dst_points)
+    # unwarped_image = cv2.warpPerspective(frame, M, (w, h))
+
+    # # calculate the numerical value of the health 
+    # slice_roi = unwarped_image[PLAYER_1_HEALTH_SLICE_SUBREGION[1]:PLAYER_1_HEALTH_SLICE_SUBREGION[1] + PLAYER_1_HEALTH_SLICE_SUBREGION[3], PLAYER_1_HEALTH_SLICE_SUBREGION[0]:PLAYER_1_HEALTH_SLICE_SUBREGION[0] + PLAYER_1_HEALTH_SLICE_SUBREGION[2]]
+    # slice_values = []
+    # for pixel in slice_roi[0]:
+    #     white = [255, 255, 255]
+    #     distance = abs(pixel - white).sum()
+    #     if distance < 100:
+    #         slice_values.append("W")
+    #     else:
+    #         slice_values.append("X")
+
+    # health_string = "".join(slice_values)
+    # print("Health:", health_string)
+    # health_value = health_string.count("W")
+    # print(f"White pixels in health bar: {health_value}")
+
+    cv2.imwrite("roi.jpg", roi)
 
     _, img_encoded = cv2.imencode('.jpg', roi)
 
@@ -219,8 +295,8 @@ for offset in range(FRAME_COUNT):
     else:
         print("❌ Error:", response.text)
     
-    print(START_FRAME_NUMBER + offset)
-    time.sleep(0.5)
+    # print(START_FRAME_NUMBER + offset)
+    # time.sleep(0.5)
 
 capture.release()
 print(results)
