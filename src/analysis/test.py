@@ -43,13 +43,13 @@ PLAYER_1_BOUNDING_BOX = (40, 944, 270, 90)
 
 PLAYER_1_VOICE_ICON_SUBREGION = (268, 944, 20, 19)
 
-PLAYER_1_ARMOR_NW_POINT = (40, 994)
-PLAYER_1_ARMOR_NE_POINT = (309, 966)
-PLAYER_1_ARMOR_SE_POINT = (309, 981)
-PLAYER_1_ARMOR_SW_POINT = (40, 1011)
-PLAYER_1_ARMOR_BOUNDING_BOX = (40, 966, 269, 46)
-PLAYER_1_ARMOR_SLICE_SUBREGION = (4, 20, 261, 1)
-# src_points = numpy.float32([PLAYER_1_ARMOR_NW_POINT, PLAYER_1_ARMOR_NE_POINT, PLAYER_1_ARMOR_SW_POINT, PLAYER_1_ARMOR_SE_POINT]) 
+PLAYER_1_SHIELD_NW_POINT = (40, 994)
+PLAYER_1_SHIELD_NE_POINT = (309, 966)
+PLAYER_1_SHIELD_SE_POINT = (309, 981)
+PLAYER_1_SHIELD_SW_POINT = (40, 1011)
+PLAYER_1_SHIELD_BOUNDING_BOX = (40, 966, 269, 46)
+PLAYER_1_SHIELD_SLICE_SUBREGION = (4, 20, 261, 1)
+# src_points = numpy.float32([PLAYER_1_SHIELD_NW_POINT, PLAYER_1_SHIELD_NE_POINT, PLAYER_1_SHIELD_SW_POINT, PLAYER_1_SHIELD_SE_POINT]) 
 # dst_points = numpy.float32([[0, 0], [w, 0], [0, h], [w, h]])
 # M = cv2.getPerspectiveTransform(src_points, dst_points)
 # unwarped_image = cv2.warpPerspective(frame, M, (w, h))
@@ -147,7 +147,7 @@ for offset in range(FRAME_COUNT):
     # cv2.rectangle(frame, PLAYER_2_BOUNDING_BOX[:2], (PLAYER_2_BOUNDING_BOX[0] + PLAYER_2_BOUNDING_BOX[2], PLAYER_2_BOUNDING_BOX[1] + PLAYER_2_BOUNDING_BOX[3]), (0, 0, 255), 1)
     # cv2.rectangle(frame, PLAYER_1_BOUNDING_BOX[:2], (PLAYER_1_BOUNDING_BOX[0] + PLAYER_1_BOUNDING_BOX[2], PLAYER_1_BOUNDING_BOX[1] + PLAYER_1_BOUNDING_BOX[3]), (0, 0, 255), 1)
     # cv2.rectangle(frame, PLAYER_1_VOICE_ICON_SUBREGION[:2], (PLAYER_1_VOICE_ICON_SUBREGION[0] + PLAYER_1_VOICE_ICON_SUBREGION[2], PLAYER_1_VOICE_ICON_SUBREGION[1] + PLAYER_1_VOICE_ICON_SUBREGION[3]), (0, 0, 255), 1)
-    # cv2.rectangle(frame, PLAYER_1_ARMOR_BOUNDING_BOX[:2], (PLAYER_1_ARMOR_BOUNDING_BOX[0] + PLAYER_1_ARMOR_BOUNDING_BOX[2], PLAYER_1_ARMOR_BOUNDING_BOX[1] + PLAYER_1_ARMOR_BOUNDING_BOX[3]), (0, 0, 255), 1)
+    # cv2.rectangle(frame, PLAYER_1_SHIELD_BOUNDING_BOX[:2], (PLAYER_1_SHIELD_BOUNDING_BOX[0] + PLAYER_1_SHIELD_BOUNDING_BOX[2], PLAYER_1_SHIELD_BOUNDING_BOX[1] + PLAYER_1_SHIELD_BOUNDING_BOX[3]), (0, 0, 255), 1)
     # cv2.rectangle(frame, PLAYER_1_HEALTH_BOUNDING_BOX[:2], (PLAYER_1_HEALTH_BOUNDING_BOX[0] + PLAYER_1_HEALTH_BOUNDING_BOX[2], PLAYER_1_HEALTH_BOUNDING_BOX[1] + PLAYER_1_HEALTH_BOUNDING_BOX[3]), (0, 0, 255), 1)
     # cv2.rectangle(frame, OVER_ENCUMBERED_ICON_REGION[:2], (OVER_ENCUMBERED_ICON_REGION[0] + OVER_ENCUMBERED_ICON_REGION[2], OVER_ENCUMBERED_ICON_REGION[1] + OVER_ENCUMBERED_ICON_REGION[3]), (0, 0, 255), 1)
     # cv2.rectangle(frame, STAMINA_BAR_SUBREGION[:2], (STAMINA_BAR_SUBREGION[0] + STAMINA_BAR_SUBREGION[2], STAMINA_BAR_SUBREGION[1] + STAMINA_BAR_SUBREGION[3]), (0, 0, 255), 1)
@@ -211,13 +211,13 @@ for offset in range(FRAME_COUNT):
 
     # Shield calculation
 
-    # src_points = numpy.float32([PLAYER_1_ARMOR_NW_POINT, PLAYER_1_ARMOR_NE_POINT, PLAYER_1_ARMOR_SW_POINT, PLAYER_1_ARMOR_SE_POINT]) 
+    # src_points = numpy.float32([PLAYER_1_SHIELD_NW_POINT, PLAYER_1_SHIELD_NE_POINT, PLAYER_1_SHIELD_SW_POINT, PLAYER_1_SHIELD_SE_POINT]) 
     # dst_points = numpy.float32([[0, 0], [w, 0], [0, h], [w, h]])
     # M = cv2.getPerspectiveTransform(src_points, dst_points)
     # unwarped_image = cv2.warpPerspective(frame, M, (w, h))
 
-    # # calculate the numerical value of the armor 
-    # slice_roi = unwarped_image[PLAYER_1_ARMOR_SLICE_SUBREGION[1]:PLAYER_1_ARMOR_SLICE_SUBREGION[1] + PLAYER_1_ARMOR_SLICE_SUBREGION[3], PLAYER_1_ARMOR_SLICE_SUBREGION[0]:PLAYER_1_ARMOR_SLICE_SUBREGION[0] + PLAYER_1_ARMOR_SLICE_SUBREGION[2]]
+    # # calculate the numerical value of the shield 
+    # slice_roi = unwarped_image[PLAYER_1_SHIELD_SLICE_SUBREGION[1]:PLAYER_1_SHIELD_SLICE_SUBREGION[1] + PLAYER_1_SHIELD_SLICE_SUBREGION[3], PLAYER_1_SHIELD_SLICE_SUBREGION[0]:PLAYER_1_SHIELD_SLICE_SUBREGION[0] + PLAYER_1_SHIELD_SLICE_SUBREGION[2]]
     # slice_values = []
     # for pixel in slice_roi[0]:
     #     blue = [167, 150, 63]
@@ -241,12 +241,12 @@ for offset in range(FRAME_COUNT):
     #     elif (black_delta == min_diff).all():
     #         slice_values.append("X")
     #     else:
-    #         print("No armor pixel detected")
+    #         print("No shield pixel detected")
 
     # shield_string = "".join(slice_values)
     # print("Shield:", shield_string)
 
-    # # Count number of B, R, Y in armor value
+    # # Count number of B, R, Y in shield value
     # num_blue = shield_string.count("B")
     # num_red = shield_string.count("R")
     # num_yellow = shield_string.count("Y")
