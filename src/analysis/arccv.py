@@ -204,7 +204,6 @@ class ARCCV:
             looting_ui_frame = frame.copy()
             map_ui_frame = frame.copy()
 
-
             self._draw_in_raid_ui(raid_ui_frame)
             cv2.imwrite(f"/usr/src/analysis/frame/inraid_frame_{int(PROCESS_START_FRAME + offset):06d}.jpg", raid_ui_frame)
 
