@@ -20,6 +20,7 @@ services:
     volumes:
       - ./volumes/videos:/root/videos
       - ./src/analysis:/usr/src/analysis
+      - ./volumes/assets/loot:/root/assets/loot
     networks:
       - arc_raiders_cv
 

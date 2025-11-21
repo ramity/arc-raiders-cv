@@ -7,5 +7,7 @@ __pycache__
 *.txt
 *.jpg
 *.png
+*.webp
 
+!docs/assets/*
 !.gitkeep
