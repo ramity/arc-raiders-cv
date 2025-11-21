@@ -184,14 +184,13 @@ class ARCCV:
 
         # Define process overrides
 
+        # 2608011038.mp4 Framestamps:
         # PROCESS_START_FRAME = 84120 # In Raid UI example
-
-        PROCESS_START_FRAME = 71160 # Looting UI example
-
+        # PROCESS_START_FRAME = 71160 # Looting UI example
         # PROCESS_FRAME_COUNT = 6 # Map UI example
         # PROCESS_FRAME_COUNT = 89040 # Map UI example
 
-        # PROCESS_START_FRAME = (24 * 60 * 60) + (44 * 60)
+        PROCESS_START_FRAME = (24 * 60 * 60) + (44 * 60)
         PROCESS_FRAME_COUNT = 1
         capture.set(cv2.CAP_PROP_POS_FRAMES, PROCESS_START_FRAME)
 
