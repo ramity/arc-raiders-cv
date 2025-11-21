@@ -150,6 +150,21 @@ class ARCCV:
         "Practice Range"
     ]
 
+    POSSIBLE_MAP_MODIFIERS = [
+        "Lust Blooms",
+        "Prospectiing Probes",
+        "Husk Graveyard",
+        "Uncovered Caches",
+        "Launch Tower Loot",
+        "Harvester",
+        "Matriarch",
+        "Night Raid",
+        "Electromagnetic Storm",
+        "Hidden Bunker",
+        "Locked Gate",
+        # "Snow Variant" # Planned December 2025 release
+    ]
+
     def __init__(self):
         
         self.statistics = {}
