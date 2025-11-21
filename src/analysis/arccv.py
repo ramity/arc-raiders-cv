@@ -279,17 +279,16 @@ class ARCCV:
                 raise ValueError(f"Could not read frame {PROCESS_START_FRAME + offset} from video.")
 
             raid_ui_frame = frame.copy()
-            looting_ui_frame = frame.copy()
-            map_ui_frame = frame.copy()
-
             self._draw_in_raid_ui(raid_ui_frame)
-            cv2.imwrite(f"/usr/src/analysis/frame/inraid_frame_{int(PROCESS_START_FRAME + offset):06d}.jpg", raid_ui_frame)
+            cv2.imwrite(f"/usr/src/analysis/frame/inraid_frame_{int(PROCESS_START_FRAME + offset):07d}.jpg", raid_ui_frame)
 
+            looting_ui_frame = frame.copy()
             self._draw_looting_ui(looting_ui_frame)
-            cv2.imwrite(f"/usr/src/analysis/frame/looting_frame_{int(PROCESS_START_FRAME + offset):06d}.jpg", looting_ui_frame)
+            cv2.imwrite(f"/usr/src/analysis/frame/looting_frame_{int(PROCESS_START_FRAME + offset):07d}.jpg", looting_ui_frame)
 
+            map_ui_frame = frame.copy()
             self._draw_map_ui(map_ui_frame)
-            cv2.imwrite(f"/usr/src/analysis/frame/map_frame_{int(PROCESS_START_FRAME + offset):06d}.jpg", map_ui_frame)
+            cv2.imwrite(f"/usr/src/analysis/frame/map_frame_{int(PROCESS_START_FRAME + offset):07d}.jpg", map_ui_frame)
 
             self._stamina_calculation(frame)
             self._shield_calculation(frame)

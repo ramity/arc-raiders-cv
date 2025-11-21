@@ -1,6 +1,8 @@
 # Arc Raiders CV
 
-An early preview on the current regions being processed:
+This is a reboot and remaster of my previous [apexcv](https://github.com/ramity/apexcv) project.
+
+Here is an early preview of the current regions being processed:
 
 > In Raid UI
 !["INRAID"](./docs/assets/inraid_frame_084120.jpg)
@@ -56,11 +58,9 @@ Reference https://github.com/lay295/TwitchDownloader/blob/master/TwitchDownloade
 
 ## Twitch Chat + LLM Side Quest
 
-Ollama + Python container
-
-Create a script to simulate chat using timestamped data and do some experiments using system prompted requests
-
-Create a script that simulates the accumulation a buffer of messages over time and periodically releases it to an LLM
+1. Ollama or transformers LLM inside a Python container
+2. Create a script to simulate chat using timestamped data and do some experiments using system prompted requests
+3. Create a script that simulates the accumulation a buffer of messages over time and periodically releases it to an LLM
 
 # Taxonomy
 
