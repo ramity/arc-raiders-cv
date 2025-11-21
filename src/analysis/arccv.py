@@ -234,6 +234,15 @@ class ARCCV:
         "Snap And Salvage"
     ]
 
+    POSSIBLE_AMMO_TYPES = [
+        "Light Ammo",
+        "Medium Ammo",
+        "Heavy Ammo",
+        "Shotgun Ammo",
+        "Launcher Ammo",
+        "Energy Clip"
+    ]
+
     def __init__(self):
         
         self.statistics = {}
