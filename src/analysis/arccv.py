@@ -152,7 +152,7 @@ class ARCCV:
 
     POSSIBLE_MAP_MODIFIERS = [
         "Lust Blooms",
-        "Prospectiing Probes",
+        "Prospecting Probes",
         "Husk Graveyard",
         "Uncovered Caches",
         "Launch Tower Loot",
