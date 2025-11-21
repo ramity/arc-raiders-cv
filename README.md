@@ -32,7 +32,7 @@ An early preview on the current regions being processed:
 
 ### What?
 
-This repo enables the downloading of twitch VODs and processing them with a combination of classical computer vision and machine learning tooling to gain additional insights into what actually happened within the video without having to manually footage oneself.
+This repo enables the downloading of twitch VODs and processing them with a combination of classical computer vision and machine learning tooling to gain additional insights into what actually happened within the video without having to manually scan and annotate the footage oneself.
 
 ### Why?
 
