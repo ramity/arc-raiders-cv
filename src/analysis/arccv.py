@@ -58,6 +58,8 @@ class ARCCV:
     STAMINA_BAR_SUBREGION = (857, 968, 206, 16)
     STAMINA_BAR_SLICE_SUBREGION = (3, 7, 200, 1)
 
+    INVENTORY_OVERLAY_SUBREGION = (923, 639, 72, 108)
+
     PATCH_SERVER_LOBBY_REGION = (1731, 1060, 160, 20)
 
     RELOAD_INDICATOR_SUBREGION = (940, 520, 40, 40)
@@ -160,11 +162,8 @@ class ARCCV:
         fps = capture.get(cv2.CAP_PROP_FPS)
         total_frames = int(capture.get(cv2.CAP_PROP_FRAME_COUNT))
 
-        # Inventory space tooltip
-        # 23:22
-
         # Define process overrides
-        PROCESS_START_FRAME = (19 * 60 * 60) + (46 * 60)
+        PROCESS_START_FRAME = (23 * 60 * 60) + (22 * 60)
         PROCESS_FRAME_COUNT = 1
         capture.set(cv2.CAP_PROP_POS_FRAMES, PROCESS_START_FRAME)
 
@@ -187,6 +186,10 @@ class ARCCV:
 
             self._draw_map_ui(map_ui_frame)
             cv2.imwrite(f"/usr/src/analysis/map_frame_{int(PROCESS_START_FRAME + offset):06d}.jpg", map_ui_frame)
+
+            self._stamina_calculation(frame)
+            self._shield_calculation(frame)
+            self._health_calculation(frame)
 
             # Determine scene
             # scene = self._determine_scene(frame)
@@ -252,6 +255,7 @@ class ARCCV:
         cv2.rectangle(frame, self.PLAYER_1_SHIELD_BOUNDING_BOX[:2], (self.PLAYER_1_SHIELD_BOUNDING_BOX[0] + self.PLAYER_1_SHIELD_BOUNDING_BOX[2], self.PLAYER_1_SHIELD_BOUNDING_BOX[1] + self.PLAYER_1_SHIELD_BOUNDING_BOX[3]), (0, 0, 255), 1)
         cv2.rectangle(frame, self.PLAYER_1_HEALTH_BOUNDING_BOX[:2], (self.PLAYER_1_HEALTH_BOUNDING_BOX[0] + self.PLAYER_1_HEALTH_BOUNDING_BOX[2], self.PLAYER_1_HEALTH_BOUNDING_BOX[1] + self.PLAYER_1_HEALTH_BOUNDING_BOX[3]), (0, 0, 255), 1)
         cv2.rectangle(frame, self.OVER_ENCUMBERED_ICON_REGION[:2], (self.OVER_ENCUMBERED_ICON_REGION[0] + self.OVER_ENCUMBERED_ICON_REGION[2], self.OVER_ENCUMBERED_ICON_REGION[1] + self.OVER_ENCUMBERED_ICON_REGION[3]), (0, 0, 255), 1)
+        cv2.rectangle(frame, self.INVENTORY_OVERLAY_SUBREGION[:2], (self.INVENTORY_OVERLAY_SUBREGION[0] + self.INVENTORY_OVERLAY_SUBREGION[2], self.INVENTORY_OVERLAY_SUBREGION[1] + self.INVENTORY_OVERLAY_SUBREGION[3]), (0, 0, 255), 1)
         cv2.rectangle(frame, self.STAMINA_BAR_SUBREGION[:2], (self.STAMINA_BAR_SUBREGION[0] + self.STAMINA_BAR_SUBREGION[2], self.STAMINA_BAR_SUBREGION[1] + self.STAMINA_BAR_SUBREGION[3]), (0, 0, 255), 1)
         cv2.rectangle(frame, self.PATCH_SERVER_LOBBY_REGION[:2], (self.PATCH_SERVER_LOBBY_REGION[0] + self.PATCH_SERVER_LOBBY_REGION[2], self.PATCH_SERVER_LOBBY_REGION[1] + self.PATCH_SERVER_LOBBY_REGION[3]), (0, 0, 255), 1)
         cv2.rectangle(frame, self.RELOAD_INDICATOR_SUBREGION[:2], (self.RELOAD_INDICATOR_SUBREGION[0] + self.RELOAD_INDICATOR_SUBREGION[2], self.RELOAD_INDICATOR_SUBREGION[1] + self.RELOAD_INDICATOR_SUBREGION[3]), (0, 0, 255), 1)
@@ -310,13 +314,13 @@ class ARCCV:
 
     def _shield_calculation(self, frame):
         x, y, w, h = self.PLAYER_1_SHIELD_BOUNDING_BOX
-        src_points = numpy.float32([PLAYER_1_SHIELD_NW_POINT, PLAYER_1_SHIELD_NE_POINT, PLAYER_1_SHIELD_SW_POINT, PLAYER_1_SHIELD_SE_POINT]) 
+        src_points = numpy.float32([self.PLAYER_1_SHIELD_NW_POINT, self.PLAYER_1_SHIELD_NE_POINT, self.PLAYER_1_SHIELD_SW_POINT, self.PLAYER_1_SHIELD_SE_POINT]) 
         dst_points = numpy.float32([[0, 0], [w, 0], [0, h], [w, h]])
         M = cv2.getPerspectiveTransform(src_points, dst_points)
         unwarped_image = cv2.warpPerspective(frame, M, (w, h))
 
         # calculate the numerical value of the shield
-        slice_roi = self._extract_subregion(unwarped_image, PLAYER_1_SHIELD_SLICE_SUBREGION)
+        slice_roi = self._extract_subregion(unwarped_image, self.PLAYER_1_SHIELD_SLICE_SUBREGION)
         slice_values = []
         for pixel in slice_roi[0]:
             blue = [167, 150, 63]
@@ -356,7 +360,7 @@ class ARCCV:
 
     def _health_calculation(self, frame):
         x, y, w, h = self.PLAYER_1_HEALTH_BOUNDING_BOX
-        src_points = numpy.float32([PLAYER_1_HEALTH_NW_POINT, PLAYER_1_HEALTH_NE_POINT, PLAYER_1_HEALTH_SW_POINT, PLAYER_1_HEALTH_SE_POINT]) 
+        src_points = numpy.float32([self.PLAYER_1_HEALTH_NW_POINT, self.PLAYER_1_HEALTH_NE_POINT, self.PLAYER_1_HEALTH_SW_POINT, self.PLAYER_1_HEALTH_SE_POINT]) 
         dst_points = numpy.float32([[0, 0], [w, 0], [0, h], [w, h]])
         M = cv2.getPerspectiveTransform(src_points, dst_points)
         unwarped_image = cv2.warpPerspective(frame, M, (w, h))
