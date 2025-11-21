@@ -108,7 +108,12 @@ class ARCCV:
 
     # Map UI
 
+    MAP_BOUNDING_BOX = (48, 112, 1824, 856)
+    MAP_PLAYER_POSITION_SUBREGION = (949, 531, 21, 21)
     MAP_LEGEND_BOUNDING_BOX = (1506, 128, 350, 815)
+    MAP_DETAILS_SUBREGION = (1506, 128, 350, 86)
+    MAP_QUESTS_BOUNDING_BOX = (48, 128, 466, 824)
+    MAP_KEYBINDS_BOUNDING_BOX = (51, 1017, 1231, 34)
 
     # Weapon localization
 
@@ -163,7 +168,15 @@ class ARCCV:
         total_frames = int(capture.get(cv2.CAP_PROP_FRAME_COUNT))
 
         # Define process overrides
-        PROCESS_START_FRAME = (23 * 60 * 60) + (22 * 60)
+
+        # PROCESS_START_FRAME = 84120 # In Raid UI example
+
+        PROCESS_START_FRAME = 71160 # Looting UI example
+
+        # PROCESS_FRAME_COUNT = 6 # Map UI example
+        # PROCESS_FRAME_COUNT = 89040 # Map UI example
+
+        # PROCESS_START_FRAME = (24 * 60 * 60) + (44 * 60)
         PROCESS_FRAME_COUNT = 1
         capture.set(cv2.CAP_PROP_POS_FRAMES, PROCESS_START_FRAME)
 
@@ -179,13 +192,13 @@ class ARCCV:
 
 
             self._draw_in_raid_ui(raid_ui_frame)
-            cv2.imwrite(f"/usr/src/analysis/inraid_frame_{int(PROCESS_START_FRAME + offset):06d}.jpg", raid_ui_frame)
+            cv2.imwrite(f"/usr/src/analysis/frame/inraid_frame_{int(PROCESS_START_FRAME + offset):06d}.jpg", raid_ui_frame)
 
             self._draw_looting_ui(looting_ui_frame)
-            cv2.imwrite(f"/usr/src/analysis/looting_frame_{int(PROCESS_START_FRAME + offset):06d}.jpg", looting_ui_frame)
+            cv2.imwrite(f"/usr/src/analysis/frame/looting_frame_{int(PROCESS_START_FRAME + offset):06d}.jpg", looting_ui_frame)
 
             self._draw_map_ui(map_ui_frame)
-            cv2.imwrite(f"/usr/src/analysis/map_frame_{int(PROCESS_START_FRAME + offset):06d}.jpg", map_ui_frame)
+            cv2.imwrite(f"/usr/src/analysis/frame/map_frame_{int(PROCESS_START_FRAME + offset):06d}.jpg", map_ui_frame)
 
             self._stamina_calculation(frame)
             self._shield_calculation(frame)
@@ -235,6 +248,10 @@ class ARCCV:
         return response.json()
 
     def _draw_in_raid_ui(self, frame):
+        # Shared UI
+        cv2.rectangle(frame, self.FRAME_RATE_COUNTER_SUBREGION[:2], (self.FRAME_RATE_COUNTER_SUBREGION[0] + self.FRAME_RATE_COUNTER_SUBREGION[2], self.FRAME_RATE_COUNTER_SUBREGION[1] + self.FRAME_RATE_COUNTER_SUBREGION[3]), (0, 0, 255), 1)
+
+        # In-raid UI specific
         cv2.rectangle(frame, self.COMPASS_SUBREGION[:2], (self.COMPASS_SUBREGION[0] + self.COMPASS_SUBREGION[2], self.COMPASS_SUBREGION[1] + self.COMPASS_SUBREGION[3]), (0, 0, 255), 1)
         cv2.rectangle(frame, self.COMPASS_BEARING_VALUE_SUBREGION[:2], (self.COMPASS_BEARING_VALUE_SUBREGION[0] + self.COMPASS_BEARING_VALUE_SUBREGION[2], self.COMPASS_BEARING_VALUE_SUBREGION[1] + self.COMPASS_BEARING_VALUE_SUBREGION[3]), (0, 0, 255), 1)
         cv2.rectangle(frame, self.COMPASS_OBJECTIVES_SUBREGION[:2], (self.COMPASS_OBJECTIVES_SUBREGION[0] + self.COMPASS_OBJECTIVES_SUBREGION[2], self.COMPASS_OBJECTIVES_SUBREGION[1] + self.COMPASS_OBJECTIVES_SUBREGION[3]), (0, 0, 255), 1)
@@ -244,7 +261,6 @@ class ARCCV:
         cv2.rectangle(frame, self.RETURN_POINT_SHUTDOWN_NOTICE_REGION[:2], (self.RETURN_POINT_SHUTDOWN_NOTICE_REGION[0] + self.RETURN_POINT_SHUTDOWN_NOTICE_REGION[2], self.RETURN_POINT_SHUTDOWN_NOTICE_REGION[1] + self.RETURN_POINT_SHUTDOWN_NOTICE_REGION[3]), (0, 0, 255), 1)
         cv2.rectangle(frame, self.QUICKWHEEL_BOUNDING_BOX[:2], (self.QUICKWHEEL_BOUNDING_BOX[0] + self.QUICKWHEEL_BOUNDING_BOX[2], self.QUICKWHEEL_BOUNDING_BOX[1] + self.QUICKWHEEL_BOUNDING_BOX[3]), (0, 0, 255), 1)
         cv2.rectangle(frame, self.QUICKWHEEL_TEXT_SUBREGION[:2], (self.QUICKWHEEL_TEXT_SUBREGION[0] + self.QUICKWHEEL_TEXT_SUBREGION[2], self.QUICKWHEEL_TEXT_SUBREGION[1] + self.QUICKWHEEL_TEXT_SUBREGION[3]), (0, 0, 255), 1)
-        cv2.rectangle(frame, self.FRAME_RATE_COUNTER_SUBREGION[:2], (self.FRAME_RATE_COUNTER_SUBREGION[0] + self.FRAME_RATE_COUNTER_SUBREGION[2], self.FRAME_RATE_COUNTER_SUBREGION[1] + self.FRAME_RATE_COUNTER_SUBREGION[3]), (0, 0, 255), 1)
         cv2.rectangle(frame, self.LOCATION_TEXT_SUBREGION[:2], (self.LOCATION_TEXT_SUBREGION[0] + self.LOCATION_TEXT_SUBREGION[2], self.LOCATION_TEXT_SUBREGION[1] + self.LOCATION_TEXT_SUBREGION[3]), (0, 0, 255), 1)
         cv2.rectangle(frame, self.XP_LOGS_SUBREGION[:2], (self.XP_LOGS_SUBREGION[0] + self.XP_LOGS_SUBREGION[2], self.XP_LOGS_SUBREGION[1] + self.XP_LOGS_SUBREGION[3]), (0, 0, 255), 1)
         cv2.rectangle(frame, self.PLAYER_PROXIMITY_VOICE_SUBREGION[:2], (self.PLAYER_PROXIMITY_VOICE_SUBREGION[0] + self.PLAYER_PROXIMITY_VOICE_SUBREGION[2], self.PLAYER_PROXIMITY_VOICE_SUBREGION[1] + self.PLAYER_PROXIMITY_VOICE_SUBREGION[3]), (0, 0, 255), 1)
@@ -273,7 +289,11 @@ class ARCCV:
         cv2.rectangle(frame, self.PLAYER_ZONE_BOUNDING_BOX[:2], (self.PLAYER_ZONE_BOUNDING_BOX[0] + self.PLAYER_ZONE_BOUNDING_BOX[2], self.PLAYER_ZONE_BOUNDING_BOX[1] + self.PLAYER_ZONE_BOUNDING_BOX[3]), (0, 0, 255), 1)
 
     def _draw_looting_ui(self, frame):
+        # Shared UI
+        cv2.rectangle(frame, self.FRAME_RATE_COUNTER_SUBREGION[:2], (self.FRAME_RATE_COUNTER_SUBREGION[0] + self.FRAME_RATE_COUNTER_SUBREGION[2], self.FRAME_RATE_COUNTER_SUBREGION[1] + self.FRAME_RATE_COUNTER_SUBREGION[3]), (0, 0, 255), 1)
         cv2.rectangle(frame, self.OVERLAY_NAVIGATION_SUBREGION[:2], (self.OVERLAY_NAVIGATION_SUBREGION[0] + self.OVERLAY_NAVIGATION_SUBREGION[2], self.OVERLAY_NAVIGATION_SUBREGION[1] + self.OVERLAY_NAVIGATION_SUBREGION[3]), (0, 0, 255), 1)
+
+        # Lotting UI specific
         cv2.rectangle(frame, self.LOOTING_INVENTORY_LOADOUT_DETAILS_SUBREGION[:2], (self.LOOTING_INVENTORY_LOADOUT_DETAILS_SUBREGION[0] + self.LOOTING_INVENTORY_LOADOUT_DETAILS_SUBREGION[2], self.LOOTING_INVENTORY_LOADOUT_DETAILS_SUBREGION[1] + self.LOOTING_INVENTORY_LOADOUT_DETAILS_SUBREGION[3]), (0, 0, 255), 1)
         cv2.rectangle(frame, self.LOOTING_EQUIPMENT_AUGMENT_SUBREGION[:2], (self.LOOTING_EQUIPMENT_AUGMENT_SUBREGION[0] + self.LOOTING_EQUIPMENT_AUGMENT_SUBREGION[2], self.LOOTING_EQUIPMENT_AUGMENT_SUBREGION[1] + self.LOOTING_EQUIPMENT_AUGMENT_SUBREGION[3]), (0, 0, 255), 1)
         cv2.rectangle(frame, self.LOOTING_EQUIPMENT_SHIELD_SUBREGION[:2], (self.LOOTING_EQUIPMENT_SHIELD_SUBREGION[0] + self.LOOTING_EQUIPMENT_SHIELD_SUBREGION[2], self.LOOTING_EQUIPMENT_SHIELD_SUBREGION[1] + self.LOOTING_EQUIPMENT_SHIELD_SUBREGION[3]), (0, 0, 255), 1)
@@ -292,7 +312,17 @@ class ARCCV:
         cv2.rectangle(frame, self.LOOTING_SALVAGE_BOUNDING_BOX[:2], (self.LOOTING_SALVAGE_BOUNDING_BOX[0] + self.LOOTING_SALVAGE_BOUNDING_BOX[2], self.LOOTING_SALVAGE_BOUNDING_BOX[1] + self.LOOTING_SALVAGE_BOUNDING_BOX[3]), (0, 0, 255), 1)
 
     def _draw_map_ui(self, frame):
+        # Shared UI
+        cv2.rectangle(frame, self.FRAME_RATE_COUNTER_SUBREGION[:2], (self.FRAME_RATE_COUNTER_SUBREGION[0] + self.FRAME_RATE_COUNTER_SUBREGION[2], self.FRAME_RATE_COUNTER_SUBREGION[1] + self.FRAME_RATE_COUNTER_SUBREGION[3]), (0, 0, 255), 1)
+        cv2.rectangle(frame, self.OVERLAY_NAVIGATION_SUBREGION[:2], (self.OVERLAY_NAVIGATION_SUBREGION[0] + self.OVERLAY_NAVIGATION_SUBREGION[2], self.OVERLAY_NAVIGATION_SUBREGION[1] + self.OVERLAY_NAVIGATION_SUBREGION[3]), (0, 0, 255), 1)
+
+        # Map UI specific
+        cv2.rectangle(frame, self.MAP_BOUNDING_BOX[:2], (self.MAP_BOUNDING_BOX[0] + self.MAP_BOUNDING_BOX[2], self.MAP_BOUNDING_BOX[1] + self.MAP_BOUNDING_BOX[3]), (0, 0, 255), 1)
+        cv2.rectangle(frame, self.MAP_PLAYER_POSITION_SUBREGION[:2], (self.MAP_PLAYER_POSITION_SUBREGION[0] + self.MAP_PLAYER_POSITION_SUBREGION[2], self.MAP_PLAYER_POSITION_SUBREGION[1] + self.MAP_PLAYER_POSITION_SUBREGION[3]), (0, 0, 255), 1)
         cv2.rectangle(frame, self.MAP_LEGEND_BOUNDING_BOX[:2], (self.MAP_LEGEND_BOUNDING_BOX[0] + self.MAP_LEGEND_BOUNDING_BOX[2], self.MAP_LEGEND_BOUNDING_BOX[1] + self.MAP_LEGEND_BOUNDING_BOX[3]), (0, 0, 255), 1)
+        cv2.rectangle(frame, self.MAP_DETAILS_SUBREGION[:2], (self.MAP_DETAILS_SUBREGION[0] + self.MAP_DETAILS_SUBREGION[2], self.MAP_DETAILS_SUBREGION[1] + self.MAP_DETAILS_SUBREGION[3]), (0, 0, 255), 1)
+        cv2.rectangle(frame, self.MAP_QUESTS_BOUNDING_BOX[:2], (self.MAP_QUESTS_BOUNDING_BOX[0] + self.MAP_QUESTS_BOUNDING_BOX[2], self.MAP_QUESTS_BOUNDING_BOX[1] + self.MAP_QUESTS_BOUNDING_BOX[3]), (0, 0, 255), 1)
+        cv2.rectangle(frame, self.MAP_KEYBINDS_BOUNDING_BOX[:2], (self.MAP_KEYBINDS_BOUNDING_BOX[0] + self.MAP_KEYBINDS_BOUNDING_BOX[2], self.MAP_KEYBINDS_BOUNDING_BOX[1] + self.MAP_KEYBINDS_BOUNDING_BOX[3]), (0, 0, 255), 1)
 
     def _stamina_calculation(self, frame):
         stamina_bar_region = self._extract_subregion(frame, self.STAMINA_BAR_SUBREGION)
