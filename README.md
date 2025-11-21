@@ -1,35 +1,27 @@
-# Steps
+# Arc Raiders CV
+
+An early preview on the current regions being processed:
+
+> In Raid UI
+!["INRAID"](./docs/assets/inraid_frame_073890.jpg)
+
+> Looting UI
+!["LOOTING"](./docs/assets/looting_frame_071160.jpg)
+
+> Map UI
+!["MAP"](./docs/assets/map_frame_089040.jpg)
+
+# Overview
 
 ## Extraction
 
-Extend ubuntu linux distro
-
-Install https://github.com/lay295/TwitchDownloader and build from source
-
-https://github.com/lay295/TwitchDownloader/releases/download/1.56.1/TwitchDownloaderCLI-1.56.1-Linux-x64.zip
+Use arc_raiders_scraper to scrape twitch vods by ID.
 
 Reference https://github.com/lay295/TwitchDownloader/blob/master/TwitchDownloaderCLI/README.md#example-commands for example commands.
 
-Extract a few arc raiders vods
-
 ## Analysis
 
-Come up with some sort of frame positioning system that is invariant to resolution differences
-
-```
-Video processing loop:
-
-    Check if a (video filename + processing software version + frame number) file exists yet
-
-    Frame data read
-
-    Scene detection
-    - Conditionally extract subregions and process for data
-
-    Export frame data
-
-Save frame data blob
-```
+`python process-twitch-vod.py`
 
 ## Twitch Chat + LLM Side Quest
 
