@@ -265,10 +265,18 @@ class ARCCV:
         # 2608011038.mp4 Framestamps:
         # PROCESS_START_FRAME = 84120 # In Raid UI example
         # PROCESS_START_FRAME = 71160 # Looting UI example
-        # PROCESS_FRAME_COUNT = 6 # Map UI example
-        # PROCESS_FRAME_COUNT = 89040 # Map UI example
+        # PROCESS_START_FRAME = 6 # Map UI example
+        # PROCESS_START_FRAME = 89040 # Map UI example
+        PROCESS_START_FRAME = (20 * 60 * 60) + (32 * 60) # Dynamic In Raid UI example for stamina/shield/health
 
-        PROCESS_START_FRAME = (24 * 60 * 60) + (44 * 60)
+        # frame_video_out = cv2.VideoWriter(
+        #     './frame_video.mp4',
+        #     cv2.VideoWriter_fourcc(*'avc1'),
+        #     60,
+        #     (1920, 1080),
+        #     3
+        # )
+
         PROCESS_FRAME_COUNT = 1
         capture.set(cv2.CAP_PROP_POS_FRAMES, PROCESS_START_FRAME)
 
@@ -280,22 +288,40 @@ class ARCCV:
 
             raid_ui_frame = frame.copy()
             self._draw_in_raid_ui(raid_ui_frame)
-            cv2.imwrite(f"/usr/src/analysis/frame/inraid_frame_{int(PROCESS_START_FRAME + offset):07d}.jpg", raid_ui_frame)
+            # cv2.imwrite(f"/usr/src/analysis/frame/inraid_frame_{int(PROCESS_START_FRAME + offset):07d}.jpg", raid_ui_frame)
 
             looting_ui_frame = frame.copy()
             self._draw_looting_ui(looting_ui_frame)
-            cv2.imwrite(f"/usr/src/analysis/frame/looting_frame_{int(PROCESS_START_FRAME + offset):07d}.jpg", looting_ui_frame)
+            # cv2.imwrite(f"/usr/src/analysis/frame/looting_frame_{int(PROCESS_START_FRAME + offset):07d}.jpg", looting_ui_frame)
 
             map_ui_frame = frame.copy()
             self._draw_map_ui(map_ui_frame)
-            cv2.imwrite(f"/usr/src/analysis/frame/map_frame_{int(PROCESS_START_FRAME + offset):07d}.jpg", map_ui_frame)
+            # cv2.imwrite(f"/usr/src/analysis/frame/map_frame_{int(PROCESS_START_FRAME + offset):07d}.jpg", map_ui_frame)
+
+            self.statistics[PROCESS_START_FRAME + offset] = {}
+            # self.statistics[PROCESS_START_FRAME + offset][''] = ""
 
             self._stamina_calculation(frame)
             self._shield_calculation(frame)
             self._health_calculation(frame)
 
+            # frame_video_out.write(frame)
+
             # Determine scene
             # scene = self._determine_scene(frame)
+
+    def _perform_ocr_and_place_text(self, frame, output_path):
+        results = self._perform_ocr(frame)
+        result_frame = frame.copy()
+
+        for item in results["results"]:
+            # [[p1,p2], [p3,p4], [p5,p6], [p7,p8]]
+            points = item['bbox']
+
+            cv2.rectangle(result_frame, (points[0][0], points[0][1]), (points[2][0], points[2][1]), (0, 255, 0), 2)
+            cv2.putText(result_frame, item['text'], (points[0][0], points[0][1]-10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
+
+        cv2.imwrite(output_path, result_frame)
 
     def _determine_scene(self, frame):
 
