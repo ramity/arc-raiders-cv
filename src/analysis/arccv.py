@@ -268,9 +268,10 @@ class ARCCV:
         # PROCESS_START_FRAME = 6 # Map UI example
         # PROCESS_START_FRAME = 89040 # Map UI example
         # PROCESS_START_FRAME = 73920 # Dynamic In Raid UI example for stamina/shield/health
-        PROCESS_START_FRAME = 10500 # Shield and health with grey example
+        # PROCESS_START_FRAME = 10500 # Shield and health with grey example
+        # PROCESS_START_FRAME = 9960 # Shield grey and health yellow example
 
-        # PROCESS_START_FRAME = (2 * 60 * 60) + (55 * 60) # Dynamic In Raid UI example for stamina/shield/health
+        PROCESS_START_FRAME = (8 * 60 * 60) + (42.5 * 60)
 
         # frame_video_out = cv2.VideoWriter(
         #     './frame_video.mp4',
