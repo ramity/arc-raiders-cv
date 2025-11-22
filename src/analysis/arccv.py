@@ -267,7 +267,10 @@ class ARCCV:
         # PROCESS_START_FRAME = 71160 # Looting UI example
         # PROCESS_START_FRAME = 6 # Map UI example
         # PROCESS_START_FRAME = 89040 # Map UI example
-        PROCESS_START_FRAME = (20 * 60 * 60) + (32 * 60) # Dynamic In Raid UI example for stamina/shield/health
+        # PROCESS_START_FRAME = 73920 # Dynamic In Raid UI example for stamina/shield/health
+        PROCESS_START_FRAME = 10500 # Shield and health with grey example
+
+        # PROCESS_START_FRAME = (2 * 60 * 60) + (55 * 60) # Dynamic In Raid UI example for stamina/shield/health
 
         # frame_video_out = cv2.VideoWriter(
         #     './frame_video.mp4',
@@ -304,6 +307,7 @@ class ARCCV:
             self._stamina_calculation(frame)
             self._shield_calculation(frame)
             self._health_calculation(frame)
+            cv2.imwrite(f"/usr/src/analysis/frame/processed_frame_{int(PROCESS_START_FRAME + offset):07d}.jpg", frame)
 
             # frame_video_out.write(frame)
 
@@ -472,14 +476,16 @@ class ARCCV:
             blue = [167, 150, 63]
             red = [79, 77, 213]
             yellow = [54, 164, 205]
-            black = [89, 81, 81]
+            grey = [127, 125, 122]
+            black = [85, 73, 72]
 
             blue_delta = abs(pixel - blue).sum()
             red_delta = abs(pixel - red).sum()
             yellow_delta = abs(pixel - yellow).sum()
+            grey_delta = abs(pixel - grey).sum()
             black_delta = abs(pixel - black).sum()
 
-            min_diff = min(blue_delta, red_delta, yellow_delta, black_delta)
+            min_diff = min(blue_delta, red_delta, yellow_delta, grey_delta, black_delta)
 
             if (blue_delta == min_diff).all():
                 slice_values.append("B")
@@ -487,6 +493,8 @@ class ARCCV:
                 slice_values.append("R")
             elif (yellow_delta == min_diff).all():
                 slice_values.append("Y")
+            elif (grey_delta == min_diff).all():
+                slice_values.append("G")
             elif (black_delta == min_diff).all():
                 slice_values.append("X")
             else:
@@ -499,10 +507,11 @@ class ARCCV:
         num_blue = shield_string.count("B")
         num_red = shield_string.count("R")
         num_yellow = shield_string.count("Y")
+        num_grey = shield_string.count("G")
 
         # Count the number of Xs at the end of the string
         num_black = len(shield_string) - len(shield_string.rstrip("X"))
-        print(f"Blue: {num_blue}, Red: {num_red}, Yellow: {num_yellow}, Black from end: {num_black}")
+        print(f"Blue: {num_blue}, Red: {num_red}, Yellow: {num_yellow}, Grey: {num_grey}, Black from end: {num_black}")
 
     def _health_calculation(self, frame):
         x, y, w, h = self.PLAYER_1_HEALTH_BOUNDING_BOX
@@ -515,14 +524,31 @@ class ARCCV:
         slice_roi = self._extract_subregion(unwarped_image, self.PLAYER_1_HEALTH_SLICE_SUBREGION)
         slice_values = []
         for pixel in slice_roi[0]:
-            white = [255, 255, 255]
-            distance = abs(pixel - white).sum()
-            if distance < 100:
+            white = [248, 245, 246]
+            red = [79, 77, 213]
+            yellow = [54, 164, 205]
+            grey = [127, 125, 122]
+            black = [85, 73, 72]
+
+            white_delta = abs(pixel - white).sum()
+            red_delta = abs(pixel - red).sum()
+            yellow_delta = abs(pixel - yellow).sum()
+            grey_delta = abs(pixel - grey).sum()
+            black_delta = abs(pixel - black).sum()
+            min_diff = min(white_delta, red_delta, yellow_delta, grey_delta, black_delta)
+
+            if (white_delta == min_diff).all():
                 slice_values.append("W")
-            else:
+            elif (red_delta == min_diff).all():
+                slice_values.append("R")
+            elif (yellow_delta == min_diff).all():
+                slice_values.append("Y")
+            elif (grey_delta == min_diff).all():
+                slice_values.append("G")
+            elif (black_delta == min_diff).all():
                 slice_values.append("X")
 
         health_string = "".join(slice_values)
         print("Health:", health_string)
         health_value = health_string.count("W")
-        print(f"White pixels in health bar: {health_value}")
+        print(f"White: {health_value}, Red: {health_string.count('R')}, Yellow: {health_string.count('Y')}, Grey: {health_string.count('G')}, Black from end: {len(health_string) - len(health_string.rstrip('X'))}")
