@@ -4,6 +4,11 @@ import sys
 import time
 import pickle
 import requests
+import json
+from tqdm import tqdm
+import matplotlib.pyplot as plt
+
+DEBUG = False
 
 class ARCCV:
 
@@ -271,7 +276,8 @@ class ARCCV:
         # PROCESS_START_FRAME = 10500 # Shield and health with grey example
         # PROCESS_START_FRAME = 9960 # Shield grey and health yellow example
 
-        PROCESS_START_FRAME = (8 * 60 * 60) + (42.5 * 60)
+        # PROCESS_START_FRAME = (8 * 60 * 60) + (42.5 * 60)
+        PROCESS_START_FRAME = 0
 
         # frame_video_out = cv2.VideoWriter(
         #     './frame_video.mp4',
@@ -281,41 +287,152 @@ class ARCCV:
         #     3
         # )
 
-        PROCESS_FRAME_COUNT = 1
+        PROCESS_FRAME_COUNT = total_frames - PROCESS_START_FRAME
         capture.set(cv2.CAP_PROP_POS_FRAMES, PROCESS_START_FRAME)
 
-        for offset in range(PROCESS_FRAME_COUNT):
+        for offset in tqdm(range(PROCESS_FRAME_COUNT)):
 
             ret, frame = capture.read()
             if not ret:
                 raise ValueError(f"Could not read frame {PROCESS_START_FRAME + offset} from video.")
 
-            raid_ui_frame = frame.copy()
-            self._draw_in_raid_ui(raid_ui_frame)
+            # raid_ui_frame = frame.copy()
+            # self._draw_in_raid_ui(raid_ui_frame)
             # cv2.imwrite(f"/usr/src/analysis/frame/inraid_frame_{int(PROCESS_START_FRAME + offset):07d}.jpg", raid_ui_frame)
 
-            looting_ui_frame = frame.copy()
-            self._draw_looting_ui(looting_ui_frame)
+            # looting_ui_frame = frame.copy()
+            # self._draw_looting_ui(looting_ui_frame)
             # cv2.imwrite(f"/usr/src/analysis/frame/looting_frame_{int(PROCESS_START_FRAME + offset):07d}.jpg", looting_ui_frame)
 
-            map_ui_frame = frame.copy()
-            self._draw_map_ui(map_ui_frame)
+            # map_ui_frame = frame.copy()
+            # self._draw_map_ui(map_ui_frame)
             # cv2.imwrite(f"/usr/src/analysis/frame/map_frame_{int(PROCESS_START_FRAME + offset):07d}.jpg", map_ui_frame)
 
-            self.statistics[PROCESS_START_FRAME + offset] = {}
-            # self.statistics[PROCESS_START_FRAME + offset][''] = ""
+            # cv2.imwrite(f"/usr/src/analysis/frame/processed_frame_{int(PROCESS_START_FRAME + offset):07d}.jpg", frame)
 
-            self._stamina_calculation(frame)
-            self._shield_calculation(frame)
-            self._health_calculation(frame)
-            cv2.imwrite(f"/usr/src/analysis/frame/processed_frame_{int(PROCESS_START_FRAME + offset):07d}.jpg", frame)
+            stamina_results = self._stamina_calculation(frame)
+            shield_results = self._shield_calculation(frame)
+            health_results = self._health_calculation(frame)
+
+            self.statistics[PROCESS_START_FRAME + offset] = {}
+            self.statistics[PROCESS_START_FRAME + offset]['stamina'] = stamina_results
+            self.statistics[PROCESS_START_FRAME + offset]['shield'] = shield_results
+            self.statistics[PROCESS_START_FRAME + offset]['health'] = health_results
 
             # frame_video_out.write(frame)
 
             # Determine scene
             # scene = self._determine_scene(frame)
+    
+        # write statistics to json file
+        with open('/usr/src/analysis/frame/statistics.json', 'w') as f:
+            json.dump(self.statistics, f)
 
-    def _perform_ocr_and_place_text(self, frame, output_path):
+    def _load_and_plot_saved_statistics(self):
+
+        with open('/usr/src/analysis/frame/statistics.json', 'r') as f:
+            self.statistics = json.load(f)
+
+        frames = list(self.statistics.keys())
+        stamina_values = [self.statistics[frame]['stamina']['stamina'] for frame in frames]
+        shield_values = [self.statistics[frame]['shield']['shield'] for frame in frames]
+        health_values = [self.statistics[frame]['health']['health'] for frame in frames]
+
+        plt.figure(figsize=(20, 5))
+        plt.plot(frames, stamina_values, label='Stamina', color='black')
+        plt.plot(frames, shield_values, label='Shield', color='blue')
+        plt.plot(frames, health_values, label='Health', color='green')
+        plt.ylabel('Value')
+        plt.xlabel('Frame Number')
+        plt.xticks(ticks=range(0, len(frames), len(frames)//20))
+        plt.title('Player Stamina, Shield, and Health Over Time')
+        plt.legend()
+        plt.savefig('/usr/src/analysis/frame/player_stats_over_time.png')
+        plt.close()
+    
+    def _load_and_multi_plot_saved_statistics(self):
+
+        with open('/usr/src/analysis/frame/statistics.json', 'r') as f:
+            self.statistics = json.load(f)
+        
+        frames = list(self.statistics.keys())
+        stamina_values = [self.statistics[frame]['stamina']['stamina'] for frame in frames]
+        shield_values = [self.statistics[frame]['shield']['shield'] for frame in frames]
+        shield_damage_values = [self.statistics[frame]['shield']['damage'] for frame in frames]
+        health_values = [self.statistics[frame]['health']['health'] for frame in frames]
+        health_damage_values = [self.statistics[frame]['health']['damage'] for frame in frames]
+        fig, axs = plt.subplots(5, 1, figsize=(20, 15), sharex=True)
+        axs[0].plot(frames, stamina_values, label='Stamina', color='black')
+        axs[0].set_ylabel('Stamina Value')
+        axs[1].plot(frames, shield_values, label='Shield', color='blue')
+        axs[1].set_ylabel('Shield Value')
+        axs[2].plot(frames, shield_damage_values, label='Shield Damage', color='red')
+        axs[2].set_ylabel('Shield Damage')
+        axs[3].plot(frames, health_values, label='Health', color='green')
+        axs[3].set_ylabel('Health Value')
+        axs[4].plot(frames, health_damage_values, label='Health Damage', color='red')
+        axs[4].set_ylabel('Health Damage')
+        axs[4].set_xlabel('Frame Number')
+        fig.suptitle('Player Stamina, Shield, Shield Damage, Health, and Health Damage Over Time')
+        plt.xticks(ticks=range(0, len(frames), len(frames)//20))
+        plt.savefig('/usr/src/analysis/frame/player_stats_over_time_multi.png')
+        plt.close()
+
+    def _load_and_multi_plot_complete_saved_statistics(self):
+
+        with open('/usr/src/analysis/frame/statistics.json', 'r') as f:
+            self.statistics = json.load(f)
+        
+        frames = list(self.statistics.keys())
+
+        stamina_values = [self.statistics[frame]['stamina']['stamina'] for frame in frames]
+
+        shield_values = [self.statistics[frame]['shield']['shield'] for frame in frames]
+        shield_damage_values = [self.statistics[frame]['shield']['damage'] for frame in frames]
+        shield_queued_values = [self.statistics[frame]['shield']['queued'] for frame in frames]
+        shield_charging_values = [self.statistics[frame]['shield']['charging'] for frame in frames]
+        shield_missing_values = [self.statistics[frame]['shield']['missing'] for frame in frames]
+
+        health_values = [self.statistics[frame]['health']['health'] for frame in frames]
+        health_damage_values = [self.statistics[frame]['health']['damage'] for frame in frames]
+        health_queued_values = [self.statistics[frame]['health']['queued'] for frame in frames]
+        health_charging_values = [self.statistics[frame]['health']['charging'] for frame in frames]
+        health_missing_values = [self.statistics[frame]['health']['missing'] for frame in frames]
+
+        fig, axs = plt.subplots(11, 1, figsize=(18, 18), sharex=True)
+        axs[0].plot(frames, stamina_values, label='Stamina', color='black')
+        axs[0].set_ylabel('Stamina Value')
+
+        axs[1].plot(frames, shield_values, label='Shield', color='blue')
+        axs[1].set_ylabel('Shield Value')
+        axs[2].plot(frames, shield_damage_values, label='Shield Damage', color='red')
+        axs[2].set_ylabel('Shield Damage')
+        axs[3].plot(frames, shield_queued_values, label='Shield Queued', color='orange')
+        axs[3].set_ylabel('Shield Queued')
+        axs[4].plot(frames, shield_charging_values, label='Shield Charging', color='grey')
+        axs[4].set_ylabel('Shield Charging')
+        axs[5].plot(frames, shield_missing_values, label='Shield Missing', color='brown')
+        axs[5].set_ylabel('Shield Missing')
+
+        axs[6].plot(frames, health_values, label='Health', color='green')
+        axs[6].set_ylabel('Health Value')
+        axs[7].plot(frames, health_damage_values, label='Health Damage', color='red')
+        axs[7].set_ylabel('Health Damage')
+        axs[8].plot(frames, health_queued_values, label='Health Queued', color='orange')
+        axs[8].set_ylabel('Health Queued')
+        axs[9].plot(frames, health_charging_values, label='Health Charging', color='grey')
+        axs[9].set_ylabel('Health Charging')
+        axs[10].plot(frames, health_missing_values, label='Health Missing', color='brown')
+        axs[10].set_ylabel('Health Missing')
+        axs[10].set_xlabel('Frame Number')
+
+        fig.suptitle('Player Stamina, Shield, Shield Damage, Shield Queued, Shield Charging, Shield Missing, Health, Health Damage, Health Queued, Health Charging, and Health Missing Over Time', weight='bold')
+        plt.xticks(ticks=range(0, len(frames), len(frames)//20))
+        plt.tight_layout(pad=1.5)
+        plt.savefig('/usr/src/analysis/frame/complete_player_stats_over_time_multi.png')
+        plt.close()
+
+    def _perform_ocr_and_draw_text(self, frame, output_path):
         results = self._perform_ocr(frame)
         result_frame = frame.copy()
 
@@ -445,6 +562,7 @@ class ARCCV:
         cv2.rectangle(frame, self.MAP_QUESTS_BOUNDING_BOX[:2], (self.MAP_QUESTS_BOUNDING_BOX[0] + self.MAP_QUESTS_BOUNDING_BOX[2], self.MAP_QUESTS_BOUNDING_BOX[1] + self.MAP_QUESTS_BOUNDING_BOX[3]), (0, 0, 255), 1)
         cv2.rectangle(frame, self.MAP_KEYBINDS_BOUNDING_BOX[:2], (self.MAP_KEYBINDS_BOUNDING_BOX[0] + self.MAP_KEYBINDS_BOUNDING_BOX[2], self.MAP_KEYBINDS_BOUNDING_BOX[1] + self.MAP_KEYBINDS_BOUNDING_BOX[3]), (0, 0, 255), 1)
 
+    # Extract the stamina bar from the complete frame and calculate its value
     def _stamina_calculation(self, frame):
         stamina_bar_region = self._extract_subregion(frame, self.STAMINA_BAR_SUBREGION)
         stamina_bar_slice = self._extract_subregion(stamina_bar_region, self.STAMINA_BAR_SLICE_SUBREGION)
@@ -458,10 +576,14 @@ class ARCCV:
                 slice_values.append("X")
 
         stamina_string = "".join(slice_values)
-        print("Stamina:", stamina_string)
-        stamina_value = stamina_string.count("W")
-        print(f"White pixels in stamina bar: {stamina_value}")
-        return stamina_value
+        total = len(stamina_string)
+        stamina = stamina_string.count("W")
+
+        if DEBUG:
+            print(f"Raw stamina output: {stamina_string}")
+            print(f"Stamina: {stamina}, Total: {total}")
+
+        return {"stamina": stamina, "total": total}
 
     def _shield_calculation(self, frame):
         x, y, w, h = self.PLAYER_1_SHIELD_BOUNDING_BOX
@@ -502,17 +624,19 @@ class ARCCV:
                 print("No shield pixel detected")
 
         shield_string = "".join(slice_values)
-        print("Shield:", shield_string)
+        shield = shield_string.count("B")
+        damage = shield_string.count("R")
+        queued = shield_string.count("Y")
+        charging = shield_string.count("G")
+        total = len(shield_string)
+        missing = total - len(shield_string.rstrip("X"))
 
-        # Count number of B, R, Y in shield value
-        num_blue = shield_string.count("B")
-        num_red = shield_string.count("R")
-        num_yellow = shield_string.count("Y")
-        num_grey = shield_string.count("G")
+        if DEBUG:
+            print(f"Raw shield output: {shield_string}")
+            print(f"Shield: {shield}, Damage: {damage}, Queued: {queued}, Charging: {charging}, Missing: {missing}, Total: {total}")
+            print(f"Shield value: {shield}")
 
-        # Count the number of Xs at the end of the string
-        num_black = len(shield_string) - len(shield_string.rstrip("X"))
-        print(f"Blue: {num_blue}, Red: {num_red}, Yellow: {num_yellow}, Grey: {num_grey}, Black from end: {num_black}")
+        return {"shield": shield, "damage": damage, "queued": queued, "charging": charging, "missing": missing, "total": total}
 
     def _health_calculation(self, frame):
         x, y, w, h = self.PLAYER_1_HEALTH_BOUNDING_BOX
@@ -550,6 +674,15 @@ class ARCCV:
                 slice_values.append("X")
 
         health_string = "".join(slice_values)
-        print("Health:", health_string)
-        health_value = health_string.count("W")
-        print(f"White: {health_value}, Red: {health_string.count('R')}, Yellow: {health_string.count('Y')}, Grey: {health_string.count('G')}, Black from end: {len(health_string) - len(health_string.rstrip('X'))}")
+        health = health_string.count("W")
+        damage = health_string.count("R")
+        queued = health_string.count("Y")
+        charging = health_string.count("G")
+        total = len(health_string)
+        missing = total - len(health_string.rstrip("X"))
+
+        if DEBUG:
+            print(f"Raw health output: {health_string}")
+            print(f"Health: {health}, Damaged: {damage}, Queued: {queued}, Charging: {charging}, Missing: {missing}, Total: {total}")
+
+        return {"health": health, "damage": damage, "queued": queued, "charging": charging, "missing": missing, "total": total}

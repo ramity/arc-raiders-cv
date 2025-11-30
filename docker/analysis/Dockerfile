@@ -18,6 +18,7 @@ RUN apt install -y pkg-config
 RUN pip install --break-system-packages numpy
 RUN pip install --break-system-packages matplotlib
 RUN pip install --break-system-packages requests
+RUN pip install --break-system-packages tqdm
 
 # OpenCV dependencies
 RUN apt install -y cmake g++ wget unzip
@@ -35,7 +36,7 @@ RUN mkdir /root/opencv/build
 RUN cd /root/opencv/build && cmake -DWITH_FFMPEG=1 -DOPENCV_EXTRA_MODULES_PATH=../opencv_contrib-4.x/modules ../opencv-4.x
 
 # Build and install OpenCV
-RUN cd /root/opencv/build && make -j32
+RUN cd /root/opencv/build && make -j$(nproc)
 RUN cd /root/opencv/build && make install
 
 # Add "python" alias

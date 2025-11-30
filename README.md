@@ -2,6 +2,26 @@
 
 This is a reboot and remaster of my previous [apexcv](https://github.com/ramity/apexcv) project.
 
+## What?
+
+This repo enables the downloading of twitch VODs and processing them with a combination of classical computer vision and machine learning tooling to gain additional insights into what actually happened within the video without having to manually scan the footage oneself.
+
+## Why?
+
+Tooling like this provides additional context that makes editing arc raiders content easier. To name a few, it helps provide answers to questions like:
+
+- Knowing exactly what and when someone loots something
+- Know every instance a player shoots, takes damage, heals, etc
+- Cross reference footage from multiple sources for multiperspective edits
+- Produce high resolution stats for comparing videos
+- Experiment with displaying contextual information in a custom video player
+
+## Statistics plotted
+
+!["COMPLETE STATS"](./docs/assets/complete_player_stats_over_time_multi.png)
+
+## Preview
+
 Here is an early preview of the current regions being processed:
 
 > In Raid UI
@@ -16,7 +36,7 @@ Here is an early preview of the current regions being processed:
 !["MAP"](./docs/assets/map_frame_089040.jpg)
 !["MAP OCR"](./docs/assets/ocr_result_0089040.jpg)
 
-> # Example UI Calculations
+## Example UI Calculations
 
 !["Resource Calculations"](./docs/assets/inraid_frame_0073920_resource_calculation.jpg)
 
@@ -65,22 +85,6 @@ The following stats can be calculated from the above frame:
 > Health: WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWGRRRRRRRRRRRXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 >
 > White: 218, Red: 11, Yellow: 0, Grey: 1, Black from end: 31
-
-# Overview
-
-### What?
-
-This repo enables the downloading of twitch VODs and processing them with a combination of classical computer vision and machine learning tooling to gain additional insights into what actually happened within the video without having to manually scan and annotate the footage oneself.
-
-### Why?
-
-Tooling like this provides additional context that makes editing arc raiders content easier. To name a few, it helps provide answers to questions like:
-
-- Knowing exactly what and when someone loots something
-- Know every instance a player shoots, takes damage, heals, etc
-- Cross reference footage from multiple sources for multiperspective edits
-- Produce high resolution stats for comparing videos
-- Experiment with displaying contextual information in a custom video player
 
 ## Extraction
 
