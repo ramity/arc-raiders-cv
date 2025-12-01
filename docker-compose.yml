@@ -59,6 +59,13 @@ services:
       - ./src/ocr:/usr/src/ocr
     networks:
       - arc_raiders_cv
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              capabilities: [gpu]
+              count: 1
 
 networks:
 

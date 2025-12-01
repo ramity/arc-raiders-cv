@@ -12,8 +12,38 @@ app = FastAPI(title="EasyOCR Web Service")
 def load_ocr_model():
     global reader
     # Initialize EasyOCR with English by default (add more languages if needed)
-    reader = easyocr.Reader(['en'], gpu=False)
+    reader = easyocr.Reader(['en'], gpu=True)
     print("✅ EasyOCR model loaded and ready for use.")
+
+@app.post("/health")
+async def health_check():
+    return {"status": "healthy"}
+
+@app.post("/compass-ocr")
+async def compass_ocr_endpoint(file: UploadFile = File(...)):
+    try:
+        # Read the uploaded image into memory
+        image_bytes = await file.read()
+        image_stream = io.BytesIO(image_bytes)
+        image = Image.open(image_stream)
+
+        # Perform OCR
+        allowlist = ['N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
+        results = reader.readtext(image_bytes, allowlist=allowlist, detail=1)
+
+        # Format results into JSON-friendly structure
+        response = [
+            {
+                "bbox": [[int(item) for item in sublist] for sublist in result[0]],
+                "text": result[1],
+                "confidence": result[2]
+            }
+            for result in results
+        ]
+        return JSONResponse(content={"results": response})
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 @app.post("/ocr")
 async def ocr_endpoint(file: UploadFile = File(...)):

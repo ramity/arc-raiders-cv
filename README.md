@@ -2,6 +2,19 @@
 
 This is a reboot and remaster of my previous [apexcv](https://github.com/ramity/apexcv) project.
 
+# TOC
+
+1. [What?](#what)
+2. [Why?](#why)
+3. [Statistics Plotted](#statistics-plotted)
+4. [Preview](#preview)
+5. [Example UI Calculations](#example-ui-calculations)
+6. [Extraction](#extraction)
+7. [Analysis](#analysis)
+8. [Taxonomy](#taxonomy)
+9. [Project Roadmap](#project-roadmap)
+10. [Ideas For Future Work](#ideas-for-future-work)
+
 ## What?
 
 This repo enables the downloading of twitch VODs and processing them with a combination of classical computer vision and machine learning tooling to gain additional insights into what actually happened within the video without having to manually scan the footage oneself.
@@ -16,7 +29,7 @@ Tooling like this provides additional context that makes editing arc raiders con
 - Produce high resolution stats for comparing videos
 - Experiment with displaying contextual information in a custom video player
 
-## Statistics plotted
+## Statistics Plotted
 
 !["COMPLETE STATS"](./docs/assets/complete_player_stats_over_time_multi.png)
 
@@ -96,7 +109,7 @@ Reference https://github.com/lay295/TwitchDownloader/blob/master/TwitchDownloade
 
 `python process-twitch-vod.py`
 
-# Taxonomy
+## Taxonomy
 
 UI
 
@@ -248,7 +261,7 @@ UI
 
     - Crafting
 
-# Project Roadmap
+## Project Roadmap
 
 Themes:
 - Exploring faster scene recognition using scene context while being compatible with task scheduling.
@@ -271,7 +284,7 @@ Deliverables:
 - Create frontend that converts VOD into timeline file.
 - Create frontend that enables interacting with the stats timeline and clicking on an item shows the frame.
 
-# Ideas For Future Work
+## Ideas For Future Work
 
 - Context aware state machine scene detection
 - Twitch Chat + LLM Side Quest
