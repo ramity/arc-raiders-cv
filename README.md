@@ -96,12 +96,6 @@ Reference https://github.com/lay295/TwitchDownloader/blob/master/TwitchDownloade
 
 `python process-twitch-vod.py`
 
-## Twitch Chat + LLM Side Quest
-
-1. Ollama or transformers LLM inside a Python container
-2. Create a script to simulate chat using timestamped data and do some experiments using system prompted requests
-3. Create a script that simulates the accumulation a buffer of messages over time and periodically releases it to an LLM
-
 # Taxonomy
 
 UI
@@ -254,15 +248,35 @@ UI
 
     - Crafting
 
-# Context unaware scene detection
+# Project Roadmap
 
+Themes:
+- Exploring faster scene recognition using scene context while being compatible with task scheduling.
+- Creating compute infrastructure for arccv.py operations to schedule and scale in a celery cluster.
+- Creating a frontend and backend that interact with the compute infra to provide external peers access.
 
+Deliverables:
+- Create context unaware scene detection that runs every frame. Requirements:
+  1. Reliable - Reliably determine scene every frame.
+  2. Lightweight - Perform as little computation as possible. Be smart everywhere else.
+- Standardize frame statistics output. Version state of arccv processing.
+- Modularize the code for frame eval to be scheduled in many async threads to correctly saturate compute.
+- Modularize the code to be scheduled in a multi-device celery cluster.
+- Create frontend that enables specifying a vod ID, start time, end time, and export options(?).
+- Create frontend that displays user job in job queue with details like position, est start, duration, and end.
+- Create backend that calls the scraper container to download vod ID with specified arguments.
+- Create backend that performs arccv.py operations with specified video.
+- Create backend that returns the computed stats json file.
+- Create backend that processes statistics into a timeline file.
+- Create frontend that converts VOD into timeline file.
+- Create frontend that enables interacting with the stats timeline and clicking on an item shows the frame.
 
-# Context aware state machine scene detection
+# Ideas For Future Work
 
-
-
-```
-
-
-```
+- Context aware state machine scene detection
+- Twitch Chat + LLM Side Quest
+  1. Ollama or transformers LLM inside a Python container.
+  2. Create a script to simulate chat using timestamped data and do some experiments using system prompted requests.
+  3. Create a script that simulates the accumulation a buffer of messages over time and periodically releases it to an LLM.
+  4. Use summarizer to summarize streams and create a hierarchy/pyramid of summaries.
+  5. Create an interview question process.
